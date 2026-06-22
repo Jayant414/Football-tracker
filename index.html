@@ -4,37 +4,164 @@
     <meta charset="UTF-8">
     <title>Football Tracker</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
-        body { background: #0a0a0a; color: white; font-family: 'Poppins', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        body { 
+            background: #0a0a0a; 
+            color: white; 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Canvas for Glowing Balls */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
 
         /* Login Overlay */
-        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 100; }
-        .login-box { background: rgba(10, 10, 20, 0.9); padding: 40px; border-radius: 20px; border: 1px solid #00d4ff; text-align: center; animation: moveGlow 2s infinite alternate; }
-        @keyframes moveGlow { from { box-shadow: 0 0 10px #00d4ff; } to { box-shadow: 0 0 30px #00d4ff; } }
+        #login-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(20px); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 100; 
+        }
+        
+        /* Made Login Box Bigger */
+        .login-box { 
+            background: rgba(15, 15, 25, 0.95); 
+            padding: 60px 50px; 
+            border-radius: 24px; 
+            border: 2px solid #00d4ff; 
+            text-align: center; 
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+            animation: moveGlow 2.5s infinite alternate ease-in-out; 
+        }
+        
+        @keyframes moveGlow { 
+            from { box-shadow: 0 0 15px rgba(0, 212, 255, 0.3); } 
+            to { box-shadow: 0 0 35px rgba(0, 212, 255, 0.6); } 
+        }
+
+        .login-box h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Input field styling adjustments inside login */
+        .login-box input {
+            width: 100%;
+            box-sizing: border-box;
+            background: #161622;
+            border: 1px solid #333;
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .login-box input:focus {
+            border-color: #00d4ff;
+            outline: none;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
 
         /* Dashboard Styles */
-        h1 { font-size: 3rem; background: linear-gradient(90deg, #00d4ff, #ff007a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
-        table { width: 90%; max-width: 800px; border-collapse: collapse; background: rgba(255,255,255,0.03); border-radius: 15px; overflow: hidden; margin-top: 30px; }
-        th { padding: 20px; background: rgba(0,0,0,0.3); }
-        td { padding: 15px; text-align: center; border-bottom: 1px solid #222; }
-        input { background: #1a1a1a; border: 1px solid #333; color: white; padding: 10px; border-radius: 8px; width: 60px; }
-        button { background: #00d4ff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        h1 { 
+            font-size: 3rem; 
+            background: linear-gradient(90deg, #00d4ff, #ff007a); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3); 
+            margin-top: 40px;
+        }
+        
+        table { 
+            width: 90%; 
+            max-width: 800px; 
+            border-collapse: collapse; 
+            background: rgba(255,255,255,0.03); 
+            backdrop-filter: blur(5px);
+            border-radius: 15px; 
+            overflow: hidden; 
+            margin-top: 30px; 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        th { padding: 20px; background: rgba(0,0,0,0.5); font-weight: 600; }
+        td { padding: 15px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        /* General Table Inputs */
+        table input { background: #1a1a1a; border: 1px solid #00d4ff; color: white; padding: 10px; border-radius: 8px; width: 60px; text-align: center; outline: none; }
+        
+        /* Global button styles */
+        button { background: #00d4ff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #000; transition: transform 0.2s, background-color 0.2s; }
+        button:hover { background: #00bfe6; transform: scale(1.02); }
+
+        /* Pencil Icon Button */
+        .icon-btn { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 5px; transition: transform 0.2s; }
+        .icon-btn:hover { background: transparent; transform: scale(1.2); }
+
+        /* Overtaking Animation */
+        @keyframes overtake {
+            0% { transform: scale(0.95) translateY(30px); background: rgba(0, 212, 255, 0.5); box-shadow: inset 0 0 20px #00d4ff; }
+            50% { transform: scale(1.02) translateY(-5px); background: rgba(0, 212, 255, 0.2); }
+            100% { transform: scale(1) translateY(0); background: transparent; box-shadow: none; }
+        }
+        .overtake-anim {
+            animation: overtake 1.2s ease-out forwards;
+            position: relative;
+            z-index: 10;
+        }
+
     </style>
 </head>
 <body>
 
+    <canvas id="bg-canvas"></canvas>
+
     <div id="login-overlay">
         <div class="login-box">
             <h2 style="color:#00d4ff">Login</h2>
-            <input type="text" id="user" placeholder="Username"><br>
-            <input type="password" id="pass" placeholder="Password"><br>
+            <input type="text" id="user" placeholder="Username">
+            <input type="password" id="pass" placeholder="Password">
             <button onclick="login()">Enter</button>
         </div>
     </div>
 
     <h1>Football Stats</h1>
     <div id="admin-controls" style="display:none; margin-bottom:20px;">
-        <input type="text" id="playerName" placeholder="Player Name" style="width: 150px;">
+        <input type="text" id="playerName" placeholder="Player Name" style="width: 150px; background: #1a1a1a; border: 1px solid #333; color: white; padding: 10px; border-radius: 8px;">
         <button onclick="addPlayer()">Add Player</button>
     </div>
 
@@ -43,7 +170,6 @@
         <tbody id="stats-body"></tbody>
     </table>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
@@ -62,44 +188,216 @@
 
         let role = null;
         let players = [];
+        let editingIndex = -1; // Tracks which row is currently being edited
+        let animatingPlayer = null; // Tracks the player showing the overtake animation
 
-        // Sync with Firebase
+        // Sync with Firebase and Auto-Sort
         db.on('value', (snapshot) => {
-            players = snapshot.val() || [];
+            let data = snapshot.val() || [];
+            // Sort dynamically by total G/A (descending)
+            data.sort((a, b) => (b.g + b.a) - (a.g + a.a));
+            players = data;
             render();
         });
 
         function login() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
-            if(u === "admin414" && p === "iamadmin") { role = 'admin'; document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-controls').style.display = 'block'; }
-            else if(u === "user123" && p === "user120") { role = 'user'; document.getElementById('login-overlay').style.display = 'none'; }
+            if(u === "admin414" && p === "thepasswordispassword") { role = 'admin'; document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-controls').style.display = 'block'; render(); }
+            else if(u === "user123" && p === "user120") { role = 'user'; document.getElementById('login-overlay').style.display = 'none'; render(); }
             else { alert("Invalid Credentials!"); }
         }
 
         function addPlayer() {
             let name = document.getElementById('playerName').value;
-            if(name) { players.push({ name, g: 0, a: 0 }); db.set(players); }
+            if(name) { 
+                players.push({ name, g: 0, a: 0 }); 
+                db.set(players); 
+                document.getElementById('playerName').value = ''; 
+            }
         }
 
-        function updateStats(i, type, val) {
-            players[i][type] = parseInt(val) || 0;
-            db.set(players);
+        // Listens for 'Enter' key to save automatically
+        function checkEnter(event, index) {
+            if (event.key === 'Enter') {
+                saveEdit(index);
+            }
+        }
+
+        function saveEdit(i) {
+            let newG = parseInt(document.getElementById('edit-g').value) || 0;
+            let newA = parseInt(document.getElementById('edit-a').value) || 0;
+            
+            let oldTotal = players[i].g + players[i].a;
+            let newTotal = newG + newA;
+            
+            players[i].g = newG;
+            players[i].a = newA;
+            let pName = players[i].name;
+            let oldRank = i;
+
+            // Clone and sort to predict new rank
+            let tempPlayers = [...players];
+            tempPlayers.sort((a, b) => (b.g + b.a) - (a.g + a.a));
+            let newRank = tempPlayers.findIndex(p => p.name === pName);
+
+            // Trigger animation if rank improved and total increased
+            if (newRank < oldRank && newTotal > oldTotal) {
+                animatingPlayer = pName;
+                setTimeout(() => { animatingPlayer = null; render(); }, 1500); // clear animation after it finishes
+            }
+
+            editingIndex = -1; // Close edit mode
+            players = tempPlayers; 
+            db.set(players); // Save sorted array to Firebase
         }
 
         function render() {
             let html = '';
             players.forEach((p, i) => {
-                html += `<tr>
+                let isEditing = (i === editingIndex);
+                let rowClass = (p.name === animatingPlayer) ? 'class="overtake-anim"' : '';
+
+                // Generate actions based on role and edit state
+                let actionsHTML = 'View Only';
+                if (role === 'admin') {
+                    if (isEditing) {
+                        actionsHTML = `<button onclick="saveEdit(${i})">Save</button>`;
+                    } else {
+                        actionsHTML = `
+                            <button class="icon-btn" onclick="editingIndex = ${i}; render();" title="Edit Stats">✏️</button>
+                            <button onclick="players.splice(${i},1); db.set(players)" style="margin-left:8px;">Del</button>
+                        `;
+                    }
+                }
+
+                html += `<tr ${rowClass}>
                     <td>${p.name}</td>
-                    <td>${role === 'admin' ? `<input type="number" value="${p.g}" onchange="updateStats(${i}, 'g', this.value)">` : p.g}</td>
-                    <td>${role === 'admin' ? `<input type="number" value="${p.a}" onchange="updateStats(${i}, 'a', this.value)">` : p.a}</td>
-                    <td>${p.g + p.a}</td>
-                    <td>${role === 'admin' ? `<button onclick="players.splice(${i},1); db.set(players)">Del</button>` : 'View Only'}</td>
+                    <td>${isEditing ? `<input type="number" id="edit-g" value="${p.g}" onkeydown="checkEnter(event, ${i})">` : p.g}</td>
+                    <td>${isEditing ? `<input type="number" id="edit-a" value="${p.a}" onkeydown="checkEnter(event, ${i})">` : p.a}</td>
+                    <td><strong>${p.g + p.a}</strong></td>
+                    <td>${actionsHTML}</td>
                 </tr>`;
             });
             document.getElementById('stats-body').innerHTML = html;
+            
+            // Automatically focus the goals input if edit mode was just opened
+            if (editingIndex !== -1 && document.getElementById('edit-g')) {
+                document.getElementById('edit-g').focus();
+            }
         }
+
+        // --- Moving & Deflecting Glowing White Balls Animation ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        const numberOfParticles = 35; 
+        
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 100 
+        };
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 5 + 4; 
+                this.baseSpeedX = (Math.random() - 0.5) * 1.2; 
+                this.baseSpeedY = (Math.random() - 0.5) * 1.2;
+                this.speedX = this.baseSpeedX; 
+                this.speedY = this.baseSpeedY;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                if (mouse.x !== null && mouse.y !== null) {
+                    let dx = this.x - mouse.x;
+                    let dy = this.y - mouse.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouse.radius) {
+                        let forceDirectionX = dx / distance;
+                        let forceDirectionY = dy / distance;
+
+                        let force = (mouse.radius - distance) / mouse.radius;
+                        let directionX = forceDirectionX * force * 4; 
+                        let directionY = forceDirectionY * force * 4;
+
+                        this.speedX = this.baseSpeedX + directionX;
+                        this.speedY = this.baseSpeedY + directionY;
+                    } else {
+                        this.speedX += (this.baseSpeedX - this.speedX) * 0.05;
+                        this.speedY += (this.baseSpeedY - this.speedY) * 0.05;
+                    }
+                }
+
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.baseSpeedX *= -1;
+                    this.speedX *= -1;
+                }
+                if (this.y < 0 || this.y > canvas.height) {
+                    this.baseSpeedY *= -1;
+                    this.speedY *= -1;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                
+                let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 3);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+                gradient.addColorStop(0.4, `rgba(255, 255, 255, ${this.opacity * 0.4})`);
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
     </script>
 </body>
 </html>
