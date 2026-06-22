@@ -203,9 +203,22 @@
         function login() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
-            if(u === "admin414" && p === "thepasswordispassword") { role = 'admin'; document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-controls').style.display = 'block'; render(); }
-            else if(u === "user123" && p === "user120") { role = 'user'; document.getElementById('login-overlay').style.display = 'none'; render(); }
-            else { alert("Invalid Credentials!"); }
+            
+            // Updated Admin Password Check
+            if(u === "admin414" && p === "thepasswordispassword") { 
+                role = 'admin'; 
+                document.getElementById('login-overlay').style.display = 'none'; 
+                document.getElementById('admin-controls').style.display = 'block'; 
+                render(); 
+            }
+            else if(u === "user123" && p === "user120") { 
+                role = 'user'; 
+                document.getElementById('login-overlay').style.display = 'none'; 
+                render(); 
+            }
+            else { 
+                alert("Invalid Credentials!"); 
+            }
         }
 
         function addPlayer() {
